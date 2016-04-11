@@ -137,6 +137,10 @@ func (rr *RecordReader) MustColumns() []string {
 //
 // Usually Err is called after getting back a false result from a call to Next.
 func (rr *RecordReader) Err() error {
+	if nil == rr {
+		return errNilReceiver
+	}
+
 	return rr.err
 }
 
