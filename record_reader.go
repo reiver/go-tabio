@@ -10,6 +10,18 @@ import (
 )
 
 
+// RecordReader implement reading of tabular data, in plain text format, where
+// records are separated by a "record separator" (RS) ASCII and UNICODE control
+// character and fields are separated by a "unit separator" (US) ASCII and UNICODE
+// control character.
+//
+// (RS = 30. US = 31)
+//
+// *RecordReader has intentionally been made to include the methods of *sql.Rows.
+//
+// Because of this, if desired, a *RecordReader can be conceptually "converted"
+// into a *sql.Rows by using the "github.com/reiver/go-shunt" package's shunt.Rows
+// func.
 type RecordReader struct {
 	reader io.ReadCloser
 	runeReader io.RuneReader
