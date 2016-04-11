@@ -17,3 +17,8 @@ func (internalNilReceiverComplainer) RuntimeError() {
 func (internalNilReceiverComplainer) BadRequestComplainer() {
 	// Nothing here.
 }
+
+
+func (internalNilReceiverComplainer) NilReceiverComplainer() {
+	// Nothing here.
+}
