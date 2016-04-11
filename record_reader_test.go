@@ -486,6 +486,80 @@ func TestRecordReaderScan(t *testing.T) {
 
 
 		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*float32)(nil), (*float32)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*float32)(nil), (*float32)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*float64)(nil), (*float64)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*float64)(nil), (*float64)(nil) },
+		},
+
+
+
+		{
 			String:  "x" +US+ "y" +RS,
 
 			Expected: [][]string{},
