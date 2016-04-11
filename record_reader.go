@@ -172,6 +172,10 @@ func (rr *RecordReader) Next() bool {
 		return false
 	}
 
+	if nil != rr.err {
+		return false
+	}
+
 
 	runeReader := rr.runeReader
 	if nil == runeReader {
