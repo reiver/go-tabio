@@ -135,6 +135,15 @@ func (rr *RecordReader) MustFields() []string {
 }
 
 
+// Next prepares the next record for reading with the Fields, Scan or Unmarshal methods.
+//
+// It returns true if it was successful.
+//
+// It returns false if there is no next record or if an error occurred while trying to prepare it.
+//
+// Err should be consulted to be able to tell the difference between the two cases.
+//
+// Every call to Fields, Scan, and Unmarshal, even the first one, must be preceded by a call to Next.
 func (rr *RecordReader) Next() bool {
 
 	const RS rune = 30 // Record Separator
