@@ -68,9 +68,16 @@ func (rr *RecordReader) Close() error {
 }
 
 
+// Columns returns the column names.
+//
+// Columns returns an error if the *RecordReader is closed.
 func (rr *RecordReader) Columns() ([]string, error) {
 	if nil == rr {
 		return nil, errNilReceiver
+	}
+
+	if rr.closed {
+		return nil, errClosed
 	}
 
 	cachedColumns := rr.cachedColumns

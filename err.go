@@ -7,6 +7,7 @@ import (
 
 
 var (
+	errClosed         = internalClosedComplainer{}
 	errInternalError  = errors.New("Internal Error")
 	errNilReceiver    = internalNilReceiverComplainer{}
 )
