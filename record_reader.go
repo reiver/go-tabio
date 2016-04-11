@@ -193,6 +193,9 @@ func (rr *RecordReader) Next() bool {
 }
 
 
+// Scan copies the fields in the current record into the values pointed at by dest.
+//
+// The number of values in dest must be the same as the number of columns in *RecordReader.
 func (rr *RecordReader) Scan(dest ...interface{}) error {
 	if nil == rr {
 		return errNilReceiver
