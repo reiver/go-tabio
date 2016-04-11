@@ -90,6 +90,7 @@ func (rr *RecordReader) Columns() ([]string, error) {
 }
 
 
+// MustColumns is like Columns, except it panic()s if there is an error.
 func (rr *RecordReader) MustColumns() []string {
 	cols, err := rr.Columns()
 	if nil != err {
@@ -123,6 +124,7 @@ func (rr *RecordReader) Fields() ([]string, error) {
 }
 
 
+// MustFields is like Fields, except it panic()s if there is an error.
 func (rr *RecordReader) MustFields() []string {
 	fields, err := rr.Fields()
 	if nil != err {
@@ -219,6 +221,7 @@ func (rr *RecordReader) Scan(dest ...interface{}) error {
 	return nil
 }
 
+// MustScan is like Scan, except it panic()s if there is an error.
 func (rr *RecordReader) MustScan(dest ...interface{}) {
 	if err := rr.Scan(dest...); nil != err {
 		panic(err)
@@ -247,6 +250,7 @@ panic("//@TODO TODO TODO TODO TODO")
 	return nil
 }
 
+// MustUnmarshal is like Unmarshal, except it panic()s if there is an error.
 func (rr *RecordReader) MustUnmarshal(target interface{}) {
 	if err := rr.Unmarshal(target); nil != err {
 		panic(err)
