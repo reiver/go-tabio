@@ -35,6 +35,7 @@ type RecordReader struct {
 }
 
 
+// NewRecordReader returns a new *RecordReader, reading from the io.ReadCloser r.
 func NewRecordReader(r io.ReadCloser) *RecordReader {
 	runeReader, ok := r.(io.RuneReader)
 	if !ok {
