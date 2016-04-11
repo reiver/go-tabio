@@ -124,6 +124,123 @@ func TestRecordReaderNext(t *testing.T) {
 		Expected int
 	}{
 		{
+			String: "",
+			Expected: 0,
+		},
+		{
+			String: "" +RS,
+			Expected: 0,
+		},
+
+
+
+		{
+			String: "" +US+ "",
+			Expected: 0,
+		},
+		{
+			String: "" +US+ "" +RS,
+			Expected: 0,
+		},
+
+
+
+		{
+			String: "" +US+ "" +US+ "",
+			Expected: 0,
+		},
+		{
+			String: "" +US+ "" +US+ "" +RS,
+			Expected: 0,
+		},
+
+
+
+		{
+			String: "" +RS+
+			        "",
+			Expected: 0,
+		},
+		{
+			String: "" +RS+
+			        "" +RS,
+			Expected: 1,
+		},
+
+
+
+		{
+			String: "" +US+ "" +RS+
+			        "" +US+ "",
+			Expected: 1,
+		},
+		{
+			String: "" +US+ "" +RS+
+			        "" +US+ "" +RS,
+			Expected: 1,
+		},
+
+
+
+		{
+			String: "" +US+ "" +US+ "" +RS+
+			        "" +US+ "" +US+ "",
+			Expected: 1,
+		},
+		{
+			String: "" +US+ "" +US+ "" +RS+
+			        "" +US+ "" +US+ "" +RS,
+			Expected: 1,
+		},
+
+
+
+		{
+			String: "" +RS+
+			        "" +RS+
+			        "",
+			Expected: 1,
+		},
+		{
+			String: "" +RS+
+			        "" +RS+
+			        "" +RS,
+			Expected: 2,
+		},
+
+
+
+		{
+			String: "" +US+ "" +RS+
+			        "" +US+ "" +RS+
+			        "" +US+ "",
+			Expected: 2,
+		},
+		{
+			String: "" +US+ "" +RS+
+			        "" +US+ "" +RS+
+			        "" +US+ "" +RS,
+			Expected: 2,
+		},
+
+
+
+		{
+			String: "" +US+ "" +US+ "" +RS+
+			        "" +US+ "" +US+ "" +RS+
+			        "" +US+ "" +US+ "",
+			Expected: 2,
+		},
+		{
+			String: "" +US+ "" +US+ "" +RS+
+			        "" +US+ "" +US+ "" +RS+
+			        "" +US+ "" +US+ "" +RS,
+			Expected: 2,
+		},
+
+
+
+		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
 			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
 			        "Jane"       +US+ "Doe"         +US+ "Surrey"    +RS,
@@ -157,7 +274,7 @@ func TestRecordReaderNext(t *testing.T) {
 			String: "fruit"  +RS+
 			        "apple"  +RS+
 			        "banana" +RS+
-			        "cherry" +RS,
+			        "cherry",
 
 			Expected: 3,
 		},
@@ -165,7 +282,7 @@ func TestRecordReaderNext(t *testing.T) {
 			String: "fruit"  +RS+
 			        "apple"  +RS+
 			        "banana" +RS+
-			        "cherry",
+			        "cherry" +RS,
 
 			Expected: 3,
 		},
@@ -173,14 +290,91 @@ func TestRecordReaderNext(t *testing.T) {
 
 
 		{
-			String: "fruit"  +RS,
+			String: "fruit",
 
 			Expected: 0,
 		},
 		{
+			String: "fruit"  +RS,
+
+			Expected: 0,
+		},
+
+
+
+		{
+			String: "fruit"  +RS+
+			        "apple",
+
+			Expected: 1,
+		},
+		{
+			String: "fruit"  +RS+
+			        "apple"  +RS,
+
+			Expected: 1,
+		},
+
+
+
+		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana",
+
+			Expected: 2,
+		},
+		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana" +RS,
+
+			Expected: 2,
+		},
+
+
+
+		{
 			String: "fruit",
 
 			Expected: 0,
+		},
+		{
+			String: "fruit"  +RS,
+
+			Expected: 0,
+		},
+
+
+
+		{
+			String: "fruit" +RS+
+			        "fruit",
+
+			Expected: 1,
+		},
+		{
+			String: "fruit" +RS+
+			        "fruit" +RS,
+
+			Expected: 1,
+		},
+
+
+
+		{
+			String: "fruit" +RS+
+			        "fruit" +RS+
+			        "fruit",
+
+			Expected: 2,
+		},
+		{
+			String: "fruit" +RS+
+			        "fruit" +RS+
+			        "fruit" +RS,
+
+			Expected: 2,
 		},
 	}
 
@@ -194,13 +388,13 @@ func TestRecordReaderNext(t *testing.T) {
 			count++
 
 			if expected, actual := test.Expected, count; expected < actual {
-				t.Errorf("For test %#d, expected count to be less than or equal to %d, but became %d,", testNumber, expected, actual)
+				t.Errorf("For test %#d, expected count to be less than or equal to %d, but became %d; for string = %q.", testNumber, expected, actual, test.String)
 				continue TestLoop
 			}
 		}
 
 		if expected, actual := test.Expected, count; expected != actual {
-			t.Errorf("For test #%d, expected %d but actually got %d.", testNumber, expected, actual)
+			t.Errorf("For test #%d, expected %d but actually got %d; for string = %q.", testNumber, expected, actual, test.String)
 			continue
 		}
 	}
