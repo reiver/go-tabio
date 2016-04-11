@@ -77,7 +77,13 @@ func (rr *RecordReader) Close() error {
 		return nil
 	}
 
-	return rr.reader.Close()
+	if err := rr.reader.Close(); nil != err {
+		return err
+	}
+
+	rr.closed = true
+
+	return nil
 }
 
 
