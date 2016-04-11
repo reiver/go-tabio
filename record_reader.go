@@ -114,6 +114,9 @@ func (rr *RecordReader) MustColumns() []string {
 }
 
 
+// Error return an err, if an error occurred when calling Next.
+//
+// Usually Err is called after getting back a false result from a call to Next.
 func (rr *RecordReader) Err() error {
 	return rr.err
 }
