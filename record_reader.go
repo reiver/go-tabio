@@ -4,13 +4,14 @@ package tabio
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
 )
 
 
 type RecordReader struct {
-	reader io.Reader
+	reader io.ReadCloser
 	runeReader io.RuneReader
 
 	buffer bytes.Buffer
@@ -21,7 +22,7 @@ type RecordReader struct {
 }
 
 
-func NewRecordReader(r io.Reader) *RecordReader {
+func NewRecordReader(r io.ReadCloser) *RecordReader {
 	runeReader, ok := r.(io.RuneReader)
 	if !ok {
 		runeReader = bufio.NewReader(r)
@@ -47,6 +48,11 @@ func NewRecordReader(r io.Reader) *RecordReader {
 
 
 	return &rr
+}
+
+
+func (rr *RecordReader) Close() error {
+	return rr.reader.Close()
 }
 
 
@@ -140,14 +146,48 @@ func (rr *RecordReader) Next() bool {
 }
 
 
-func (rr *RecordReader) Scan(...interface{}) error {
+func (rr *RecordReader) Scan(dest ...interface{}) error {
 	if nil == rr {
 		return errNilReceiver
 	}
 
-panic("//@TODO TODO TODO TODO TODO")
+	lenColumns := 0
+	if cachedColumns := rr.cachedColumns; nil != cachedColumns {
+		lenColumns = len(cachedColumns)
+	}
+
+	if lenDest := len(dest); lenColumns != lenDest {
+		return internalWrongNumberOfArgumentsComplainer{expected: uint(lenColumns), actual: uint(lenDest) }
+	}
+
+
+//@TODO: Do this better.
+	fields, err := rr.Fields()
+	if nil != err {
+		return err
+	}
+	for i, _ := range dest {
+//@TODO: need to handle converions... probably.
+		switch dest[i].(type) {
+		case *string:
+			dest[i] = &fields[i]
+		default:
+			return internalUnsupportedScanComplainer{
+				srcType:  fmt.Sprintf("%T", &fields[i]),
+				destType: fmt.Sprintf("%T", dest[i]),
+			}
+		}
+	}
+
+
+	return nil
 }
 
+func (rr *RecordReader) MustScan(dest ...interface{}) {
+	if err := rr.Scan(dest...); nil != err {
+		panic(err)
+	}
+}
 
 func (rr *RecordReader) Unmarshal(target interface{}) error {
 	if nil == rr {
@@ -169,4 +209,10 @@ panic("//@TODO TODO TODO TODO TODO")
 
 
 	return nil
+}
+
+func (rr *RecordReader) MustUnmarshal(target interface{}) {
+	if err := rr.Unmarshal(target); nil != err {
+		panic(err)
+	}
 }

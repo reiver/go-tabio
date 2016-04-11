@@ -7,6 +7,6 @@ import (
 
 
 var (
-	errNilReceiver   = internalNilReceiverComplainer{}
-	errInternalError = errors.New("Internal Error")
+	errInternalError  = errors.New("Internal Error")
+	errNilReceiver    = internalNilReceiverComplainer{}
 )

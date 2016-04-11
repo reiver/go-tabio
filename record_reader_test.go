@@ -2,6 +2,7 @@ package tabio
 
 
 import (
+	"io/ioutil"
 	"strings"
 
 	"testing"
@@ -9,11 +10,11 @@ import (
 
 
 func TestNewRecordReader(t *testing.T) {
-	reader := strings.NewReader("apple banana cherry")
+	reader := ioutil.NopCloser( strings.NewReader("apple banana cherry") )
 
-	recordReader := NewRecordReader(reader)
-	if nil == recordReader {
-		t.Errorf("Did not expect nil but actually got: %v", recordReader)
+	rr := NewRecordReader(reader)
+	if nil == rr {
+		t.Errorf("Did not expect nil but actually got: %v", rr)
 		return
 	}
 }
@@ -36,6 +37,16 @@ func TestRecordReaderColumns(t *testing.T) {
 			Expected: []string{"given_name", "family_name", "city"},
 		},
 		{
+			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
+			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
+			        "Jane"       +US+ "Doe"         +US+ "Surrey",
+
+			Expected: []string{"given_name", "family_name", "city"},
+		},
+
+
+
+		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS,
 
 			Expected: []string{"given_name", "family_name", "city"},
@@ -57,6 +68,17 @@ func TestRecordReaderColumns(t *testing.T) {
 			Expected: []string{"fruit"},
 		},
 		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana" +RS+
+			        "cherry",
+
+			Expected: []string{"fruit"},
+		},
+
+
+
+		{
 			String: "fruit"  +RS,
 
 			Expected: []string{"fruit"},
@@ -71,7 +93,7 @@ func TestRecordReaderColumns(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( strings.NewReader(test.String) )
+		rr := NewRecordReader( ioutil.NopCloser(strings.NewReader(test.String)) )
 
 		columns := rr.MustColumns()
 
@@ -109,6 +131,16 @@ func TestRecordReaderNext(t *testing.T) {
 			Expected: 2,
 		},
 		{
+			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
+			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
+			        "Jane"       +US+ "Doe"         +US+ "Surrey",
+
+			Expected: 2,
+		},
+
+
+
+		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS,
 
 			Expected: 0,
@@ -130,6 +162,17 @@ func TestRecordReaderNext(t *testing.T) {
 			Expected: 3,
 		},
 		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana" +RS+
+			        "cherry",
+
+			Expected: 3,
+		},
+
+
+
+		{
 			String: "fruit"  +RS,
 
 			Expected: 0,
@@ -144,7 +187,7 @@ func TestRecordReaderNext(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( strings.NewReader(test.String) )
+		rr := NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
 
 		count := 0
 		for rr.Next() {
@@ -162,7 +205,6 @@ func TestRecordReaderNext(t *testing.T) {
 		}
 	}
 }
-
 
 
 func TestRecordReaderFields(t *testing.T) {
@@ -184,6 +226,19 @@ func TestRecordReaderFields(t *testing.T) {
 				[]string{"Jane", "Doe",  "Surrey"},
 			},
 		},
+		{
+			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
+			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
+			        "Jane"       +US+ "Doe"         +US+ "Surrey",
+
+			Expected: [][]string{
+				[]string{"Joe",  "Blow", "Vancouver"},
+				[]string{"Jane", "Doe",  "Surrey"},
+			},
+		},
+
+
+
 		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS,
 
@@ -210,6 +265,21 @@ func TestRecordReaderFields(t *testing.T) {
 			},
 		},
 		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana" +RS+
+			        "cherry",
+
+			Expected: [][]string{
+				[]string{"apple"},
+				[]string{"banana"},
+				[]string{"cherry"},
+			},
+		},
+
+
+
+		{
 			String: "fruit"  +RS,
 
 			Expected: [][]string{},
@@ -224,7 +294,7 @@ func TestRecordReaderFields(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( strings.NewReader(test.String) )
+		rr := NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
 
 		i := 0
 		for rr.Next() {
@@ -237,6 +307,218 @@ func TestRecordReaderFields(t *testing.T) {
 			for fieldNumber, expected := range test.Expected[i] {
 				if actual := fields[fieldNumber]; expected != actual {
 					t.Errorf("For test #%d and field #%d, expected %q fields but actually got %q.", testNumber, fieldNumber, expected, actual)
+					continue TestLoop
+				}
+			}
+
+			i++
+		}
+	}
+}
+
+
+func TestRecordReaderScan(t *testing.T) {
+
+	const RS string = "\x1e"
+	const US string = "\x1f"
+
+	tests := []struct{
+		String     string
+		Expected [][]string
+		Dest     []interface{}
+	}{
+		{
+			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
+			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
+			        "Jane"       +US+ "Doe"         +US+ "Surrey"    +RS,
+
+			Expected: [][]string{
+				[]string{"Joe",  "Blow", "Vancouver"},
+				[]string{"Jane", "Doe",  "Surrey"},
+			},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil), (*string)(nil) },
+		},
+		{
+			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
+			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
+			        "Jane"       +US+ "Doe"         +US+ "Surrey",
+
+			Expected: [][]string{
+				[]string{"Joe",  "Blow", "Vancouver"},
+				[]string{"Jane", "Doe",  "Surrey"},
+			},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil), (*string)(nil) },
+		},
+
+
+
+		{
+			String: "given_name" +US+ "family_name" +US+ "city"      +RS,
+
+			Expected: [][]string{},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil), (*string)(nil) },
+		},
+		{
+			String: "given_name" +US+ "family_name" +US+ "city",
+
+			Expected: [][]string{},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil), (*string)(nil) },
+		},
+
+
+
+		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana" +RS+
+			        "cherry" +RS,
+
+			Expected: [][]string{
+				[]string{"apple"},
+				[]string{"banana"},
+				[]string{"cherry"},
+			},
+			Dest: []interface{}{ (*string)(nil) },
+		},
+		{
+			String: "fruit"  +RS+
+			        "apple"  +RS+
+			        "banana" +RS+
+			        "cherry",
+
+			Expected: [][]string{
+				[]string{"apple"},
+				[]string{"banana"},
+				[]string{"cherry"},
+			},
+			Dest: []interface{}{ (*string)(nil) },
+		},
+
+
+
+		{
+			String: "fruit"  +RS,
+
+			Expected: [][]string{},
+			Dest: []interface{}{ (*string)(nil) },
+		},
+		{
+			String: "fruit",
+
+			Expected: [][]string{},
+			Dest: []interface{}{ (*string)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*int)(nil), (*int)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*int)(nil), (*int)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS,
+
+			Expected: [][]string{},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil) },
+		},
+		{
+			String:  "x" +US+ "y",
+
+			Expected: [][]string{},
+			Dest: []interface{}{ (*string)(nil), (*string)(nil) },
+		},
+	}
+
+
+	TestLoop: for testNumber, test := range tests {
+
+		rr := NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
+
+		i := 0
+		for rr.Next() {
+			if err := rr.Scan(test.Dest...); nil != err {
+				t.Errorf("For test #%d, did not expect an error but actually got one: %v", testNumber, err)
+				continue TestLoop
+			}
+
+			if expected, actual := len(test.Expected[i]), len(test.Dest); expected != actual {
+				t.Errorf("For test #%d, expected %d fields but actually got %d.", testNumber, expected, actual)
+				continue TestLoop
+			}
+
+			for fieldNumber, expected := range test.Expected[i] {
+				if actual := test.Dest[fieldNumber]; expected == actual {
+					t.Errorf("For test #%d and field #%d, expected (%T) %q but actually got (%T) %q.", testNumber, fieldNumber, expected, expected, actual, actual)
 					continue TestLoop
 				}
 			}
