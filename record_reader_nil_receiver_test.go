@@ -150,7 +150,7 @@ func TestRecordReaderNilReceiverNext(t *testing.T) {
 
 	_ = rr.Next()
 
-	t.Errorf("This should never get here!")
+	t.Errorf("This line of code should never be reached! The previous line of code should have panic()ed.")
 }
 
 
@@ -207,4 +207,190 @@ func TestRecordReaderNilReceiverUnmarshal(t *testing.T) {
 		t.Errorf("Expected a nil receiver complainer error but did not get one.")
 		return
 	}
+}
+
+
+
+
+
+
+
+
+func TestRecordReaderNilReceiverMustClose(t *testing.T) {
+
+	defer func() {
+		if r := recover(); nil != r {
+
+			err, ok := r.(error)
+			if !ok {
+				t.Errorf("Expected an error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ RuntimeError() } ); !ok {
+				t.Errorf("Expected a runetime error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ BadRequestComplainer() } ); !ok {
+				t.Errorf("Expected a bad request complainer error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ NilReceiverComplainer() } ); !ok {
+				t.Errorf("Expected a nil receiver complainer error but did not get one.")
+				return
+			}
+		}
+	}()
+
+	rr := (*RecordReader)(nil)
+
+	rr.MustClose()
+
+	t.Errorf("This line of code should never be reached! The previous line of code should have panic()ed.")
+}
+
+
+func TestRecordReaderNilReceiverMustColumns(t *testing.T) {
+
+	defer func() {
+		if r := recover(); nil != r {
+
+			err, ok := r.(error)
+			if !ok {
+				t.Errorf("Expected an error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ RuntimeError() } ); !ok {
+				t.Errorf("Expected a runetime error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ BadRequestComplainer() } ); !ok {
+				t.Errorf("Expected a bad request complainer error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ NilReceiverComplainer() } ); !ok {
+				t.Errorf("Expected a nil receiver complainer error but did not get one.")
+				return
+			}
+		}
+	}()
+
+	rr := (*RecordReader)(nil)
+
+	_ = rr.MustColumns()
+
+	t.Errorf("This line of code should never be reached! The previous line of code should have panic()ed.")
+}
+
+
+func TestRecordReaderNilReceiverMustFields(t *testing.T) {
+
+	defer func() {
+		if r := recover(); nil != r {
+
+			err, ok := r.(error)
+			if !ok {
+				t.Errorf("Expected an error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ RuntimeError() } ); !ok {
+				t.Errorf("Expected a runetime error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ BadRequestComplainer() } ); !ok {
+				t.Errorf("Expected a bad request complainer error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ NilReceiverComplainer() } ); !ok {
+				t.Errorf("Expected a nil receiver complainer error but did not get one.")
+				return
+			}
+		}
+	}()
+
+	rr := (*RecordReader)(nil)
+
+	_ = rr.MustFields()
+
+	t.Errorf("This line of code should never be reached! The previous line of code should have panic()ed.")
+}
+
+
+func TestRecordReaderNilReceiverMustScan(t *testing.T) {
+
+	defer func() {
+		if r := recover(); nil != r {
+
+			err, ok := r.(error)
+			if !ok {
+				t.Errorf("Expected an error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ RuntimeError() } ); !ok {
+				t.Errorf("Expected a runetime error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ BadRequestComplainer() } ); !ok {
+				t.Errorf("Expected a bad request complainer error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ NilReceiverComplainer() } ); !ok {
+				t.Errorf("Expected a nil receiver complainer error but did not get one.")
+				return
+			}
+		}
+	}()
+
+	rr := (*RecordReader)(nil)
+
+	rr.MustScan()
+
+	t.Errorf("This line of code should never be reached! The previous line of code should have panic()ed.")
+}
+
+
+func TestRecordReaderNilReceiverMustUnmarshall(t *testing.T) {
+
+	defer func() {
+		if r := recover(); nil != r {
+
+			err, ok := r.(error)
+			if !ok {
+				t.Errorf("Expected an error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ RuntimeError() } ); !ok {
+				t.Errorf("Expected a runetime error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ BadRequestComplainer() } ); !ok {
+				t.Errorf("Expected a bad request complainer error but did not get one.")
+				return
+			}
+
+			if _, ok := err.( interface{ NilReceiverComplainer() } ); !ok {
+				t.Errorf("Expected a nil receiver complainer error but did not get one.")
+				return
+			}
+		}
+	}()
+
+	rr := (*RecordReader)(nil)
+
+	rr.MustUnmarshal([]interface{}{})
+
+	t.Errorf("This line of code should never be reached! The previous line of code should have panic()ed.")
 }
