@@ -81,6 +81,14 @@ func (rr *RecordReader) Close() error {
 }
 
 
+// MustClose is like Close, except it panic()s if there is an error.
+func (rr *RecordReader) MustClose() {
+	if err := rr.Close(); nil != err {
+		panic(err)
+	}
+}
+
+
 // Columns returns the column names.
 //
 // Columns returns an error if the *RecordReader is closed.
