@@ -105,11 +105,18 @@ func (rr *RecordReader) Err() error {
 }
 
 
+// Fields returns the field values.
+//
+// Fields returns an error if the *RecordReader is closed.
 func (rr *RecordReader) Fields() ([]string, error) {
 	const US = "\x1f" // Unit Separator
 
 	if nil == rr {
-		return nil, errInternalError
+		return nil, errNilReceiver
+	}
+
+	if rr.closed {
+		return nil, errClosed
 	}
 
 	return strings.Split(rr.buffer.String(), US), nil
