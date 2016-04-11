@@ -52,7 +52,7 @@ func NewRecordReader(r io.ReadCloser) *RecordReader {
 }
 
 
-// Close closes the *RecordReader, preventing further iterator.
+// Close closes the *RecordReader, preventing further iteration.
 //
 // If Next returns false then the *RecordReader is closed automatically.
 //
