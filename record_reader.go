@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 )
 
@@ -253,6 +254,20 @@ func (rr *RecordReader) Scan(dest ...interface{}) error {
 	for i, _ := range dest {
 //@TODO: need to handle converions... probably.
 		switch dest[i].(type) {
+		case *float32:
+			f32, err := strconv.ParseFloat(fields[i], 32)
+			if nil != err {
+				return err
+			}
+
+			dest[i] = &f32
+		case *float64:
+			f64, err := strconv.ParseFloat(fields[i], 64)
+			if nil != err {
+				return err
+			}
+
+			dest[i] = &f64
 		case *string:
 			dest[i] = &fields[i]
 		default:
