@@ -19,6 +19,7 @@ type RecordReader struct {
 
 	cachedColumns []string
 
+	closed bool
 }
 
 
@@ -51,7 +52,18 @@ func NewRecordReader(r io.ReadCloser) *RecordReader {
 }
 
 
+// Close closes the *RecordReader, preventing further iterator.
+//
+// If Next returns false then the *RecordReader is closed automatically.
+//
+// Close is idempotent and does not affect the result of Err.
+//
+// The first time Close is called it will in turn call Close on the wrapped io.ReadCloser that way passed to NewRecordReader.
 func (rr *RecordReader) Close() error {
+	if rr.closed {
+		return nil
+	}
+
 	return rr.reader.Close()
 }
 
@@ -115,6 +127,10 @@ func (rr *RecordReader) Next() bool {
 		panic(errNilReceiver)
 	}
 
+	if rr.closed {
+		return false
+	}
+
 
 	runeReader := rr.runeReader
 	if nil == runeReader {
@@ -130,10 +146,16 @@ func (rr *RecordReader) Next() bool {
 	for {
 		r, _, err = runeReader.ReadRune()
 		if io.EOF == err {
-			return 0 < rr.buffer.Len()
+			next := 0 < rr.buffer.Len()
+			if !next {
+				rr.Close()
+			}
+
+			return next
 		}
 		if nil != err {
 			rr.err = err
+			rr.Close()
 			return false
 		}
 
