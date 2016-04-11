@@ -74,6 +74,10 @@ func NewRecordReader(r io.ReadCloser) *RecordReader {
 //
 // The first time Close is called it will in turn call Close on the wrapped io.ReadCloser that way passed to NewRecordReader.
 func (rr *RecordReader) Close() error {
+	if nil == rr {
+		return errNilReceiver
+	}
+
 	if rr.closed {
 		return nil
 	}
