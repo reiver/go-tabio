@@ -32,6 +32,22 @@ func ExampleRecordReader_Fields() {
 }
 
 
+func ExampleRecordReader_MustFields() {
+	rows := tabio.NewRecordReader(readCloser)
+	defer rows.Close()
+
+	for rows.Next() {
+
+		fields := rows.MustFields() // This could panic()!
+
+		fmt.Printf("fields = %#v\n", fields)
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+
 func ExampleRecordReader_Scan() {
 	rows := tabio.NewRecordReader(readCloser)
 	defer rows.Close()
@@ -42,6 +58,23 @@ func ExampleRecordReader_Scan() {
 		if err := rows.Scan(&name); nil != err {
 			log.Fatal(err)
 		}
+
+		fmt.Printf("name = %q\n", name)
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+
+func ExampleRecordReader_MustScan() {
+	rows := tabio.NewRecordReader(readCloser)
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var name string
+		rows.MustScan(&name) // This could panic()!
 
 		fmt.Printf("name = %q\n", name)
 	}
@@ -73,3 +106,23 @@ func ExampleRecordReader_Unmarshal() {
 	}
 }
 
+
+func ExampleRecordReader_MustUnmarshal() {
+	rows := tabio.NewRecordReader(readCloser)
+	defer rows.Close()
+
+	for rows.Next() {
+
+		datum := struct{
+			Name string
+			Age  int
+		}{}
+
+		rows.MustUnmarshal(&datum) // This could panic()!
+
+		fmt.Printf("datum = %#v\n", datum)
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
