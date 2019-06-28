@@ -1,7 +1,9 @@
-package tabio
+package tabio_test
 
 
 import (
+	"github.com/reiver/go-tabio"
+
 	"io/ioutil"
 	"strings"
 
@@ -12,7 +14,7 @@ import (
 func TestNewRecordReader(t *testing.T) {
 	reader := ioutil.NopCloser( strings.NewReader("apple banana cherry") )
 
-	rr := NewRecordReader(reader)
+	rr := tabio.NewRecordReader(reader)
 	if nil == rr {
 		t.Errorf("Did not expect nil but actually got: %v", rr)
 		return
@@ -93,7 +95,7 @@ func TestRecordReaderColumns(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( ioutil.NopCloser(strings.NewReader(test.String)) )
+		rr := tabio.NewRecordReader( ioutil.NopCloser(strings.NewReader(test.String)) )
 
 		columns := rr.MustColumns()
 
@@ -381,7 +383,7 @@ func TestRecordReaderNext(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
+		rr := tabio.NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
 
 		count := 0
 		for rr.Next() {
@@ -488,7 +490,7 @@ func TestRecordReaderFields(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
+		rr := tabio.NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
 
 		i := 0
 		for rr.Next() {
@@ -770,7 +772,7 @@ func TestRecordReaderScan(t *testing.T) {
 
 	TestLoop: for testNumber, test := range tests {
 
-		rr := NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
+		rr := tabio.NewRecordReader( ioutil.NopCloser( strings.NewReader(test.String) ) )
 
 		i := 0
 		for rr.Next() {
@@ -789,6 +791,14 @@ func TestRecordReaderScan(t *testing.T) {
 				if actual := test.Dest[fieldNumber]; expected == actual {
 					t.Errorf("For test #%d and field #%d, expected (%T) %q but actually got (%T) %q.", testNumber, fieldNumber, expected, expected, actual, actual)
 					continue TestLoop
+				}
+			}
+
+			for fieldNumber, expected := range test.Expected[i] {
+				actualValue := test.Dest[fieldNumber]
+
+				if actual := stringAt(actualValue); expected != actual {
+					t.Errorf("For test #%d and field #%d, expected (%T) %q, but actually got (%T) %q.", testNumber, fieldNumber, expected, expected, actualValue, actual)
 				}
 			}
 
