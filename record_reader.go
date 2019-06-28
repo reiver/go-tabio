@@ -282,6 +282,27 @@ func (rr *RecordReader) Scan(dest ...interface{}) error {
 				return err
 			}
 			dest[i] = &i64
+		case *int32:
+			i64, err := strconv.ParseInt(fields[i], 10, 32)
+			if nil != err {
+				return err
+			}
+			i32 := int32(i64)
+			dest[i] = &i32
+		case *int16:
+			i64, err := strconv.ParseInt(fields[i], 10, 16)
+			if nil != err {
+				return err
+			}
+			i16 := int16(i64)
+			dest[i] = &i16
+		case *int8:
+			i64, err := strconv.ParseInt(fields[i], 10, 8)
+			if nil != err {
+				return err
+			}
+			i8 := int8(i64)
+			dest[i] = &i8
 		case *string:
 			dest[i] = &fields[i]
 		default:
