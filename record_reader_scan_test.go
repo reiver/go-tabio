@@ -19,7 +19,7 @@ func TestRecordReaderScan(t *testing.T) {
 		Expected [][]string
 		Dest     []interface{}
 	}{
-		{ // 0
+		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
 			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
 			        "Jane"       +US+ "Doe"         +US+ "Surrey"    +RS,
@@ -30,7 +30,7 @@ func TestRecordReaderScan(t *testing.T) {
 			},
 			Dest: []interface{}{ (*string)(nil), (*string)(nil), (*string)(nil) },
 		},
-		{ // 1
+		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS+
 			        "Joe"        +US+ "Blow"        +US+ "Vancouver" +RS+
 			        "Jane"       +US+ "Doe"         +US+ "Surrey",
@@ -44,13 +44,13 @@ func TestRecordReaderScan(t *testing.T) {
 
 
 
-		{ // 2
+		{
 			String: "given_name" +US+ "family_name" +US+ "city"      +RS,
 
 			Expected: [][]string{},
 			Dest: []interface{}{ (*string)(nil), (*string)(nil), (*string)(nil) },
 		},
-		{ // 3
+		{
 			String: "given_name" +US+ "family_name" +US+ "city",
 
 			Expected: [][]string{},
@@ -59,7 +59,7 @@ func TestRecordReaderScan(t *testing.T) {
 
 
 
-		{ // 4
+		{
 			String: "fruit"  +RS+
 			        "apple"  +RS+
 			        "banana" +RS+
@@ -72,7 +72,7 @@ func TestRecordReaderScan(t *testing.T) {
 			},
 			Dest: []interface{}{ (*string)(nil) },
 		},
-		{ // 5
+		{
 			String: "fruit"  +RS+
 			        "apple"  +RS+
 			        "banana" +RS+
@@ -88,13 +88,13 @@ func TestRecordReaderScan(t *testing.T) {
 
 
 
-		{ // 6
+		{
 			String: "fruit"  +RS,
 
 			Expected: [][]string{},
 			Dest: []interface{}{ (*string)(nil) },
 		},
-		{ // 7
+		{
 			String: "fruit",
 
 			Expected: [][]string{},
@@ -103,7 +103,7 @@ func TestRecordReaderScan(t *testing.T) {
 
 
 
-		{ // 8
+		{
 			String:  "x" +US+ "y" +RS+
 			        "-2" +US+ "4" +RS+
 			        "-1" +US+ "2" +RS+
@@ -120,7 +120,7 @@ func TestRecordReaderScan(t *testing.T) {
 			},
 			Dest: []interface{}{ (*string)(nil), (*string)(nil) },
 		},
-		{ // 9
+		{
 			String:  "x" +US+ "y" +RS+
 			        "-2" +US+ "4" +RS+
 			        "-1" +US+ "2" +RS+
@@ -561,6 +561,11 @@ func TestRecordReaderScan(t *testing.T) {
 
 			if expected, actual := len(test.Expected[i]), len(test.Dest); expected != actual {
 				t.Errorf("For test #%d, expected %d fields but actually got %d.", testNumber, expected, actual)
+				t.Errorf("\tString: %q", test.String)
+				t.Errorf("\tDest:...")
+				for destNumber, dest := range test.Dest {
+					t.Errorf("\t\tdest[%d] -> (%T)", destNumber, dest)
+				}
 				continue TestLoop
 			}
 
