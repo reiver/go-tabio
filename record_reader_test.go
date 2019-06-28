@@ -388,7 +388,7 @@ func TestRecordReaderNext(t *testing.T) {
 			count++
 
 			if expected, actual := test.Expected, count; expected < actual {
-				t.Errorf("For test %#d, expected count to be less than or equal to %d, but became %d; for string = %q.", testNumber, expected, actual, test.String)
+				t.Errorf("For test #%d, expected count to be less than or equal to %d, but became %d; for string = %q.", testNumber, expected, actual, test.String)
 				continue TestLoop
 			}
 		}

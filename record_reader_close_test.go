@@ -206,7 +206,7 @@ func TestRecordReaderCloseThenNext(t *testing.T) {
 
 		next := rr.Next()
 		if expected, actual := false, next; expected != actual {
-			t.Errorf("For test %#d, expected %t but actually got %t.", testNumber, expected, actual)
+			t.Errorf("For test #%d, expected %t but actually got %t.", testNumber, expected, actual)
 			return
 		}
 	}
