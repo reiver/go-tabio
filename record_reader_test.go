@@ -644,6 +644,12 @@ func TestRecordReaderScan(t *testing.T) {
 
 
 
+
+
+
+
+
+
 		{
 			String:  "x" +US+ "y" +RS+
 			        "-2" +US+ "4" +RS+
@@ -789,6 +795,166 @@ func TestRecordReaderScan(t *testing.T) {
 			},
 			Dest: []interface{}{ (*int8)(nil), (*int8)(nil) },
 		},
+
+
+
+
+
+
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint64)(nil), (*uint64)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint64)(nil), (*uint64)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint32)(nil), (*uint32)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint32)(nil), (*uint32)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint16)(nil), (*uint16)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint16)(nil), (*uint16)(nil) },
+		},
+
+
+
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4" +RS,
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint8)(nil), (*uint8)(nil) },
+		},
+		{
+			String:  "x" +US+ "y" +RS+
+			        "-2" +US+ "4" +RS+
+			        "-1" +US+ "2" +RS+
+			         "0" +US+ "0" +RS+
+			         "1" +US+ "2" +RS+
+			         "2" +US+ "4",
+
+			Expected: [][]string{
+				[]string{"-2", "4"},
+				[]string{"-1", "2"},
+				[]string{ "0", "0"},
+				[]string{ "1", "2"},
+				[]string{ "2", "4"},
+			},
+			Dest: []interface{}{ (*uint8)(nil), (*uint8)(nil) },
+		},
+
+
+
+
+
+
 
 
 
@@ -890,6 +1056,10 @@ func TestRecordReaderScan(t *testing.T) {
 			if err := rr.Scan(test.Dest...); nil != err {
 				t.Errorf("For test #%d, did not expect an error but actually got one: %v", testNumber, err)
 				t.Errorf("\tString: %q", test.String)
+				t.Errorf("\tDest:...")
+				for destNumber, dest := range test.Dest {
+					t.Errorf("\t\tdest[%d] -> (%T)", destNumber, dest)
+				}
 				continue TestLoop
 			}
 

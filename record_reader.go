@@ -262,12 +262,13 @@ func (rr *RecordReader) Scan(dest ...interface{}) error {
 	for i, _ := range dest {
 //@TODO: need to handle converions... probably.
 		switch dest[i].(type) {
+// case *encoding.TextUnmarshaler:
 		case *float32:
-			f32, err := strconv.ParseFloat(fields[i], 32)
+			f64, err := strconv.ParseFloat(fields[i], 32)
 			if nil != err {
 				return err
 			}
-
+			var f32 float32 = float32(f64)
 			dest[i] = &f32
 		case *float64:
 			f64, err := strconv.ParseFloat(fields[i], 64)
@@ -276,6 +277,9 @@ func (rr *RecordReader) Scan(dest ...interface{}) error {
 			}
 
 			dest[i] = &f64
+
+
+
 		case *int64:
 			i64, err := strconv.ParseInt(fields[i], 10, 64)
 			if nil != err {
@@ -303,8 +307,44 @@ func (rr *RecordReader) Scan(dest ...interface{}) error {
 			}
 			i8 := int8(i64)
 			dest[i] = &i8
+
+
+
 		case *string:
 			dest[i] = &fields[i]
+
+
+
+		case *uint64:
+			ui64, err := strconv.ParseUint(fields[i], 10, 64)
+			if nil != err {
+				return err
+			}
+			dest[i] = &ui64
+		case *uint32:
+			ui64, err := strconv.ParseUint(fields[i], 10, 32)
+			if nil != err {
+				return err
+			}
+			ui32 := uint32(ui64)
+			dest[i] = &ui32
+		case *uint16:
+			ui64, err := strconv.ParseUint(fields[i], 10, 16)
+			if nil != err {
+				return err
+			}
+			ui16 := uint16(ui64)
+			dest[i] = &ui16
+		case *uint8:
+			ui64, err := strconv.ParseUint(fields[i], 10, 8)
+			if nil != err {
+				return err
+			}
+			ui8 := uint8(ui64)
+			dest[i] = &ui8
+
+
+
 		default:
 			return internalUnsupportedScanComplainer{
 				srcType:  fmt.Sprintf("%T", &fields[i]),
